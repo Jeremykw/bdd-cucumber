@@ -22,9 +22,9 @@ Background: movies have been added to database
   And  I am on the RottenPotatoes home page
 
 Scenario: restrict to movies with 'PG' or 'R' ratings
-  Given I check the following ratings: PG, G
-  And I uncheck the following ratings: PG-13, NC-17, R
-  When I press the "ratings_submit" button
+  Given I check the following ratings: PG, R
+  And I uncheck the following ratings: PG-13, NC-17, G
+  When I press the "Refresh" button
   Then I should see movie number "1", "7", "8", "9", "10"
   And I should not see movie mumbers "2", "3", "4", "5", "6"
 

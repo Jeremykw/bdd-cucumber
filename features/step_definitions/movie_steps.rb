@@ -1,3 +1,4 @@
+
 # Add a declarative step here for populating the DB with movies.
 
 Given /the following movies exist/ do |movies_table|
@@ -9,14 +10,6 @@ Given /the following movies exist/ do |movies_table|
       add_movie.release_date = movie[:release_date]
       add_movie.id = id_num
     end
-=begin   
-    instance_variable_set("@#{movie[:title].gsub(/[^a-zA-Z]/, "").downcase}", Movie.new)
-    instance_variable_get("@#{movie[:title].gsub(/[^a-zA-Z]/, "").downcase}").title = movie[:title]
-    instance_variable_get("@#{movie[:title].gsub(/[^a-zA-Z]/, "").downcase}").rating = movie[:rating]
-    instance_variable_get("@#{movie[:title].gsub(/[^a-zA-Z]/, "").downcase}").release_date = movie[:release_date]
-    instance_variable_get("@#{movie[:title].gsub(/[^a-zA-Z]/, "").downcase}").id = id_num
-    id_num += 1
-=end    
   id_num += 1
   end
 end
@@ -35,12 +28,16 @@ end
 #  "When I check the following ratings: G"
 
 When /I (un)?check the following ratings: (.*)/ do |uncheck, rating_list|
-  @selected_ratings ||= Hash.new
-  if uncheck 
-    @selected_ratings[rating_list] = false
-  else
-    @selected_ratings[rating_list] = true
+  rating_list.split(",").each do |rating|
+    ratings = "ratings[#{rating.strip}]"
+    if uncheck 
+      step %{I uncheck "#{ratings}"}
+    else
+      step %{I check "#{ratings}"}
+    end
+    puts rating.inspect
   end
+  puts controller.selected_ratings.inspect
 end
 
 Then /I should see all the movies/ do
@@ -52,7 +49,7 @@ end
 When(/^I press the "(.*?)" button$/) do |submit|
   #debugger
   click_button(submit)
-
+  puts @selected_ratings.inspect
 end
 
 Then(/^I should see movie number "(.*?)"$/) do |movie_id|
