@@ -1,16 +1,24 @@
 # Add a declarative step here for populating the DB with movies.
 
 Given /the following movies exist/ do |movies_table|
-  n = 1
-  movies_table.hashes.each do |movie|    
+  id_num = 1
+  movies_table.hashes.each do |movie|
+    Movie.create do |add_movie|
+      add_movie.title = movie[:title]
+      add_movie.rating = movie[:rating]
+      add_movie.release_date = movie[:release_date]
+      add_movie.id = id_num
+    end
+=begin   
     instance_variable_set("@#{movie[:title].gsub(/[^a-zA-Z]/, "").downcase}", Movie.new)
     instance_variable_get("@#{movie[:title].gsub(/[^a-zA-Z]/, "").downcase}").title = movie[:title]
     instance_variable_get("@#{movie[:title].gsub(/[^a-zA-Z]/, "").downcase}").rating = movie[:rating]
     instance_variable_get("@#{movie[:title].gsub(/[^a-zA-Z]/, "").downcase}").release_date = movie[:release_date]
-    instance_variable_get("@#{movie[:title].gsub(/[^a-zA-Z]/, "").downcase}").id = n
-    n += 1
+    instance_variable_get("@#{movie[:title].gsub(/[^a-zA-Z]/, "").downcase}").id = id_num
+    id_num += 1
+=end    
+  id_num += 1
   end
-  
 end
 
 # Make sure that one string (regexp) occurs before or after another one
@@ -49,12 +57,15 @@ end
 
 Then(/^I should see movie number "(.*?)"$/) do |movie_id|
   puts @selected_ratings.inspect
+  ratings = @selected_ratings.find_all{|k,v| k == true }
+  movie = Movie.find_by_rating(ratings)
+  puts ratings.inspect
+=begin  
   movies_table.hashes.each do |movie|    
     instance_variable_get("@#{movie[:title].gsub(/[^a-zA-Z]/, "").downcase}").should have_id(movie_id)
-    
-   
+  
   end
-
+=end 
 
 end
 
