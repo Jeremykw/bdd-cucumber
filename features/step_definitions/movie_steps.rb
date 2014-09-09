@@ -28,16 +28,15 @@ end
 #  "When I check the following ratings: G"
 
 When /I (un)?check the following ratings: (.*)/ do |uncheck, rating_list|
-  rating_list.split(",").each do |rating|
-    ratings = "ratings[#{rating.strip}]"
+  rating_list.split.each do |r| 
+    r.delete(" ", ",").strip
+    rating = "ratings[#{r}]"
     if uncheck 
-      step %{I uncheck "#{ratings}"}
+      uncheck(rating)
     else
-      step %{I check "#{ratings}"}
+      check(rating)
     end
-    puts rating.inspect
   end
-  puts controller.selected_ratings.inspect
 end
 
 Then /I should see all the movies/ do
@@ -47,26 +46,15 @@ end
 
 
 When(/^I press the "(.*?)" button$/) do |submit|
-  #debugger
   click_button(submit)
-  puts @selected_ratings.inspect
 end
 
-Then(/^I should see movie number "(.*?)"$/) do |movie_id|
-  puts @selected_ratings.inspect
-  ratings = @selected_ratings.find_all{|k,v| k == true }
-  movie = Movie.find_by_rating(ratings)
-  puts ratings.inspect
-=begin  
-  movies_table.hashes.each do |movie|    
-    instance_variable_get("@#{movie[:title].gsub(/[^a-zA-Z]/, "").downcase}").should have_id(movie_id)
-  
-  end
-=end 
-
+Then /^I should see movie number: (.*)/ do |movie_id|
+  movie_list = Movie.where({rating: ["PG", "R"]}).count.should == 5
 end
 
-Then(/^I should not see movie mumbers "(.*?)", "(.*?)", "(.*?)", "(.*?)", "(.*?)"$/) do |arg2, arg3, arg4, arg5, arg6|
-  pending # express the regexp above with the code you wish you had
-end
 
+
+Then /^I should not see movie number: (.*?)/ do |movie_id|
+  movie_list = Movie.where({rating: ["PG-13", "NC-17", "G"]}).count.should == 5
+end
