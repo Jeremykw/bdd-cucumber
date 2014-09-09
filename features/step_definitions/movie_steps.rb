@@ -44,7 +44,6 @@ Then /I should see all the movies/ do
   flunk "Unimplemented"
 end
 
-
 When(/^I press the "(.*?)" button$/) do |submit|
   click_button(submit)
 end
@@ -53,8 +52,11 @@ Then /^I should see movie number: (.*)/ do |movie_id|
   movie_list = Movie.where({rating: ["PG", "R"]}).count.should == 5
 end
 
-
-
 Then /^I should not see movie number: (.*?)/ do |movie_id|
   movie_list = Movie.where({rating: ["PG-13", "NC-17", "G"]}).count.should == 5
 end
+
+Then(/^I should see all movies$/) do
+  movie_list = Movie.where({rating: ["PG", "R", "PG-13", "NC-17", "G"]}).count.should == 10
+end
+
