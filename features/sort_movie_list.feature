@@ -22,9 +22,13 @@ Background: movies have been added to database
   And I am on the RottenPotatoes home page
 
 Scenario: sort movies alphabetically
+  Given I check the following ratings: PG R PG-13 NC-17 G
+  And I press the "ratings_submit" button
   When I follow "Movie Title"
-  # your steps here
+  Then I should see "Amelie" before "Chocolat"
 
 Scenario: sort movies in increasing order of release date
+  Given I check the following ratings: PG R PG-13 NC-17 G
+  And I press the "ratings_submit" button
   When I follow "Release Date"
-  # your steps here
+  Then I should see "Chicken Run" before "The Helps"

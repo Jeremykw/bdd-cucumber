@@ -18,9 +18,8 @@ end
 #   on the same page
 
 Then /I should see "(.*)" before "(.*)"/ do |e1, e2|
-  #  ensure that that e1 occurs before e2.
-  #  page.body is the entire content of the page as a string.
-  flunk "Unimplemented"
+  page.body.match(/#{e2}|#{e1}/).to_s.should == page.body.match(/#{e1}/).to_s
+
 end
 
 # Make it easier to express checking or unchecking several boxes at once
@@ -59,4 +58,3 @@ end
 Then(/^I should see all movies$/) do
   movie_list = Movie.where({rating: ["PG", "R", "PG-13", "NC-17", "G"]}).count.should == 10
 end
-
